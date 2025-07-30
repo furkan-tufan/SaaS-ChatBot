@@ -1,0 +1,81 @@
+
+import { prisma } from 'wasp/server'
+import {
+  type UnauthenticatedOperationFor,
+  createUnauthenticatedOperation,
+  type AuthenticatedOperationFor,
+  createAuthenticatedOperation,
+} from '../wrappers.js'
+import { getPaginatedUsers as getPaginatedUsers_ext } from 'wasp/src/user/operations'
+import { getCustomerPortalUrl as getCustomerPortalUrl_ext } from 'wasp/src/payment/operations'
+import { getAllFilesByUser as getAllFilesByUser_ext } from 'wasp/src/file-upload/operations'
+import { getDownloadFileSignedURL as getDownloadFileSignedURL_ext } from 'wasp/src/file-upload/operations'
+import { getDailyStats as getDailyStats_ext } from 'wasp/src/analytics/operations'
+
+// PRIVATE API
+export type GetPaginatedUsers_ext = typeof getPaginatedUsers_ext
+
+// PUBLIC API
+export const getPaginatedUsers: AuthenticatedOperationFor<GetPaginatedUsers_ext> =
+  createAuthenticatedOperation(
+    getPaginatedUsers_ext,
+    {
+      User: prisma.user,
+    },
+  )
+
+
+// PRIVATE API
+export type GetCustomerPortalUrl_ext = typeof getCustomerPortalUrl_ext
+
+// PUBLIC API
+export const getCustomerPortalUrl: AuthenticatedOperationFor<GetCustomerPortalUrl_ext> =
+  createAuthenticatedOperation(
+    getCustomerPortalUrl_ext,
+    {
+      User: prisma.user,
+    },
+  )
+
+
+// PRIVATE API
+export type GetAllFilesByUser_ext = typeof getAllFilesByUser_ext
+
+// PUBLIC API
+export const getAllFilesByUser: AuthenticatedOperationFor<GetAllFilesByUser_ext> =
+  createAuthenticatedOperation(
+    getAllFilesByUser_ext,
+    {
+      User: prisma.user,
+      File: prisma.file,
+    },
+  )
+
+
+// PRIVATE API
+export type GetDownloadFileSignedURL_ext = typeof getDownloadFileSignedURL_ext
+
+// PUBLIC API
+export const getDownloadFileSignedURL: AuthenticatedOperationFor<GetDownloadFileSignedURL_ext> =
+  createAuthenticatedOperation(
+    getDownloadFileSignedURL_ext,
+    {
+      User: prisma.user,
+      File: prisma.file,
+    },
+  )
+
+
+// PRIVATE API
+export type GetDailyStats_ext = typeof getDailyStats_ext
+
+// PUBLIC API
+export const getDailyStats: AuthenticatedOperationFor<GetDailyStats_ext> =
+  createAuthenticatedOperation(
+    getDailyStats_ext,
+    {
+      User: prisma.user,
+      DailyStats: prisma.dailyStats,
+    },
+  )
+

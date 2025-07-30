@@ -1,0 +1,72 @@
+import { type MiddlewareConfigFn } from 'wasp/server';
+import { type PaymentsWebhook } from 'wasp/server/api';
+import { type PrismaClient } from '@prisma/client';
+import { type InvoicePaidData, type PaymentIntentSucceededData, type SessionCompletedData, type SubscriptionDeletedData, type SubscriptionUpdatedData } from './webhookPayload';
+export declare const stripeWebhook: PaymentsWebhook;
+export declare const stripeMiddlewareConfigFn: MiddlewareConfigFn;
+export declare function handleCheckoutSessionCompleted(session: SessionCompletedData, prismaUserDelegate: PrismaClient['user']): Promise<{
+    id: string;
+    createdAt: Date;
+    email: string | null;
+    username: string | null;
+    isAdmin: boolean;
+    paymentProcessorUserId: string | null;
+    lemonSqueezyCustomerPortalUrl: string | null;
+    subscriptionStatus: string | null;
+    subscriptionPlan: string | null;
+    datePaid: Date | null;
+    credits: number;
+} | undefined>;
+export declare function handleInvoicePaid(invoice: InvoicePaidData, prismaUserDelegate: PrismaClient['user']): Promise<{
+    id: string;
+    createdAt: Date;
+    email: string | null;
+    username: string | null;
+    isAdmin: boolean;
+    paymentProcessorUserId: string | null;
+    lemonSqueezyCustomerPortalUrl: string | null;
+    subscriptionStatus: string | null;
+    subscriptionPlan: string | null;
+    datePaid: Date | null;
+    credits: number;
+}>;
+export declare function handlePaymentIntentSucceeded(paymentIntent: PaymentIntentSucceededData, prismaUserDelegate: PrismaClient['user']): Promise<{
+    id: string;
+    createdAt: Date;
+    email: string | null;
+    username: string | null;
+    isAdmin: boolean;
+    paymentProcessorUserId: string | null;
+    lemonSqueezyCustomerPortalUrl: string | null;
+    subscriptionStatus: string | null;
+    subscriptionPlan: string | null;
+    datePaid: Date | null;
+    credits: number;
+} | undefined>;
+export declare function handleCustomerSubscriptionUpdated(subscription: SubscriptionUpdatedData, prismaUserDelegate: PrismaClient['user']): Promise<{
+    id: string;
+    createdAt: Date;
+    email: string | null;
+    username: string | null;
+    isAdmin: boolean;
+    paymentProcessorUserId: string | null;
+    lemonSqueezyCustomerPortalUrl: string | null;
+    subscriptionStatus: string | null;
+    subscriptionPlan: string | null;
+    datePaid: Date | null;
+    credits: number;
+} | undefined>;
+export declare function handleCustomerSubscriptionDeleted(subscription: SubscriptionDeletedData, prismaUserDelegate: PrismaClient['user']): Promise<{
+    id: string;
+    createdAt: Date;
+    email: string | null;
+    username: string | null;
+    isAdmin: boolean;
+    paymentProcessorUserId: string | null;
+    lemonSqueezyCustomerPortalUrl: string | null;
+    subscriptionStatus: string | null;
+    subscriptionPlan: string | null;
+    datePaid: Date | null;
+    credits: number;
+}>;
+//# sourceMappingURL=webhook.d.ts.map
