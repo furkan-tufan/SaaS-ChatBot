@@ -157,6 +157,12 @@ action generateChatbotResponse {               // ✅ yeni
 
 //#endregion
 
+route SummaryRoute { path: "/summary", to: SummaryPage }
+page SummaryPage {
+  component: import { SummaryPage } from "@src/client/SummaryPage"
+}
+
+
 //#region Payment
 route PricingPageRoute { path: "/pricing", to: PricingPage }
 page PricingPage {
@@ -184,6 +190,11 @@ api paymentsWebhook {
   entities: [User],
   middlewareConfigFn: import { paymentsMiddlewareConfigFn } from "@src/payment/webhook",
   httpRoute: (POST, "/payments-webhook")
+}
+
+api analyzeFile {
+  fn: import { analyzeFile } from "@src/server/analyzeFile",
+  httpRoute: (POST, "/analyze")
 }
 //#endregion
 
