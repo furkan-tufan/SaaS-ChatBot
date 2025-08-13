@@ -208,6 +208,17 @@ api analyzeFile {
   fn: import { analyzeFile } from "@src/server/analyzeFile",
   httpRoute: (POST, "/analyze")
 }
+
+api hashFile {
+  fn: import { hashFile } from "@src/server/qa",
+  httpRoute: (POST, "/hash")
+}
+
+api qaEvent {
+  fn: import { qaEvent } from "@src/server/qa",
+  httpRoute: (POST, "/qa") 
+}
+
 //#endregion
 
 //#region File Upload
