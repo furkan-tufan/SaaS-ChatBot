@@ -1,11 +1,9 @@
 import type { NavigationItem } from '../NavBar/NavBar';
 import { routes } from 'wasp/client/router';
-import { BlogUrl, DocsUrl } from '../../../shared/common';
 
 export const appNavigationItems: NavigationItem[] = [
-  { name: 'AI Chatbot (Demo App)', to: routes.DemoAppRoute.to },
-  { name: 'File Upload (AWS S3)', to: routes.FileUploadRoute.to },
-  { name: 'Pricing', to: routes.PricingPageRoute.to },
-  { name: 'Documentation', to: DocsUrl },
-  { name: 'Blog', to: BlogUrl },
+  { name: 'Karşılaştırma', to: routes.SummarizerPageRoute.to },
+  { name: 'Özetleme', to: routes.ComparatorPageRoute.to },
+  { name: 'Soru-Cevap', to: routes.QAPageRoute.to },
+  { name: 'Fiyatlandırma', to: routes.PricingPageRoute.to },
 ];

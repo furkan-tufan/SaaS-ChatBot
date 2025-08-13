@@ -56,7 +56,7 @@ export const UserMenuItems = ({ user, setMobileMenuOpen }: { user?: Partial<User
                 fill=''
               />
             </svg>
-            Account Settings
+            Hesap Ayarları
           </WaspRouterLink>
         </li>
       </ul>
@@ -106,7 +106,7 @@ export const UserMenuItems = ({ user, setMobileMenuOpen }: { user?: Partial<User
             fill=''
           />
         </svg>
-        Log Out
+        Çıkış Yap
       </button>
     </>
   );

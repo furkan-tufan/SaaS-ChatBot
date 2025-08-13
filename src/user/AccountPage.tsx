@@ -10,14 +10,14 @@ export default function AccountPage({ user }: { user: User }) {
       <div className='overflow-hidden border border-gray-900/10 shadow-lg sm:rounded-lg mb-4 lg:m-8 dark:border-gray-100/10'>
         <div className='px-4 py-5 sm:px-6 lg:px-8'>
           <h3 className='text-base font-semibold leading-6 text-gray-900 dark:text-white'>
-            Account Information
+            Hesap Bilgileri
           </h3>
         </div>
         <div className='border-t border-gray-900/10 dark:border-gray-100/10 px-4 py-5 sm:p-0'>
           <dl className='sm:divide-y sm:divide-gray-900/10 sm:dark:divide-gray-100/10'>
             {!!user.email && (
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5 sm:px-6'>
-                <dt className='text-sm font-medium text-gray-500 dark:text-white'>Email address</dt>
+                <dt className='text-sm font-medium text-gray-500 dark:text-white'>E-Posta Adresi</dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-400 sm:col-span-2 sm:mt-0'>
                   {user.email}
                 </dd>
@@ -25,14 +25,14 @@ export default function AccountPage({ user }: { user: User }) {
             )}
             {!!user.username && (
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5 sm:px-6'>
-                <dt className='text-sm font-medium text-gray-500 dark:text-white'>Username</dt>
+                <dt className='text-sm font-medium text-gray-500 dark:text-white'>Kullanıcı Adı</dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-400 sm:col-span-2 sm:mt-0'>
                   {user.username}
                 </dd>
               </div>
             )}
             <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5 sm:px-6'>
-              <dt className='text-sm font-medium text-gray-500 dark:text-white'>Your Plan</dt>
+              <dt className='text-sm font-medium text-gray-500 dark:text-white'>Mevcut Plan</dt>
               <UserCurrentPaymentPlan
                 subscriptionStatus={user.subscriptionStatus as SubscriptionStatus}
                 subscriptionPlan={user.subscriptionPlan}
@@ -41,9 +41,9 @@ export default function AccountPage({ user }: { user: User }) {
               />
             </div>
             <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5 sm:px-6'>
-              <dt className='text-sm font-medium text-gray-500 dark:text-white'>About</dt>
+              <dt className='text-sm font-medium text-gray-500 dark:text-white'>Hakkında</dt>
               <dd className='mt-1 text-sm text-gray-900 dark:text-gray-400 sm:col-span-2 sm:mt-0'>
-                I'm a cool customer.
+                ?
               </dd>
             </div>
           </dl>
@@ -54,7 +54,7 @@ export default function AccountPage({ user }: { user: User }) {
           onClick={logout}
           className='inline-flex justify-center mx-8 py-2 px-4 border border-transparent shadow-md text-sm font-medium rounded-md text-white bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
         >
-          logout
+          Çıkış Yap
         </button>
       </div>
     </div>
@@ -88,7 +88,7 @@ function UserCurrentPaymentPlan({
   return (
     <>
       <dd className='mt-1 text-sm text-gray-900 dark:text-gray-400 sm:col-span-1 sm:mt-0'>
-        Credits remaining: {credits}
+        Kalan kredi: {credits}
       </dd>
       <BuyMoreButton />
     </>
@@ -140,7 +140,7 @@ function BuyMoreButton() {
         to={routes.PricingPageRoute.to}
         className='font-medium text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-500'
       >
-        Buy More/Upgrade
+        Yükselt
       </WaspRouterLink>
     </div>
   );

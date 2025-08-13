@@ -5,10 +5,8 @@ import daBoiAvatar from '../client/static/da-boi.webp';
 import avatarPlaceholder from '../client/static/avatar-placeholder.webp';
 
 export const landingPageNavigationItems: NavigationItem[] = [
-  { name: 'Features', to: '#features' },
-  { name: 'Pricing', to: routes.PricingPageRoute.to },
-  { name: 'Documentation', to: DocsUrl },
-  { name: 'Blog', to: BlogUrl },
+  { name: 'Bileşenler', to: '#features' },
+  { name: 'Fiyatlandırma', to: routes.PricingPageRoute.to },
 ];
 export const features = [
   {

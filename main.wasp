@@ -157,11 +157,23 @@ action generateChatbotResponse {               // ✅ yeni
 
 //#endregion
 
-route SummaryRoute { path: "/summary", to: SummaryPage }
-page SummaryPage {
-  component: import { SummaryPage } from "@src/client/SummaryPage"
+route ComparatorPageRoute { path: "/comparator", to: ComparatorPage }
+page ComparatorPage {
+  authRequired: true,
+  component: import { ComparatorPage } from "@src/client/ComparatorPage"
 }
 
+route SummarizerPageRoute { path: "/summarizer", to: SummarizerPage }
+page SummarizerPage {
+  authRequired: true,
+  component: import { SummarizerPage } from "@src/client/SummarizerPage"
+}
+
+route QAPageRoute { path: "/qa", to: QAPage }
+page QAPage {
+  authRequired: true,
+  component: import { QAPage } from "@src/client/QAPage"
+}
 
 //#region Payment
 route PricingPageRoute { path: "/pricing", to: PricingPage }
