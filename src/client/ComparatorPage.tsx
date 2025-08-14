@@ -41,10 +41,7 @@ export const ComparatorPage: React.FC = () => {
     formData.append("file2_name", file2.name);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_REACT_APP_BASE_URL}/compare`, {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch("/compare", { method: "POST", body: formData });
 
       if (!response.ok) throw new Error("Sunucu hatası!");
       const data: ApiResponse = await response.json();
@@ -72,10 +69,7 @@ export const ComparatorPage: React.FC = () => {
     formData.append("file2_name", file2.name);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_REACT_APP_BASE_URL}/compare_llm`, {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch("/compare_llm", { method: "POST", body: formData });
 
       if (!response.ok) throw new Error("Sunucu hatası!");
       const data: ApiResponse = await response.json();
@@ -103,11 +97,7 @@ export const ComparatorPage: React.FC = () => {
     formData.append("file2_name", file2.name);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_REACT_APP_BASE_URL}/compare_llm_diff`, {
-        method: "POST",
-        body: formData,
-      });
-
+      const response = await fetch("/compare_llm_diff", { method: "POST", body: formData });
       if (!response.ok) throw new Error("Sunucu hatası!");
       const data: ApiResponse = await response.json();
       setDiffResult(data.differences);

@@ -19,18 +19,6 @@ export default function App() {
   const isLandingPage = useIsLandingPage();
   const navigationItems = isLandingPage ? landingPageNavigationItems : appNavigationItems;
 
-  // 🔒 Default dark: kayıtlı tercih yoksa 'dark' açık kalsın; varsa ona uy.
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem('theme');
-      const isDark = saved ? saved === 'dark' : true; // <-- default: dark
-      document.documentElement.classList.toggle('dark', isDark);
-    } catch {
-      // localStorage yoksa yine dark kalsın
-      document.documentElement.classList.add('dark');
-    }
-  }, []);
-
   const shouldDisplayAppNavBar = useMemo(() => {
     return location.pathname !== routes.LoginRoute.build() && location.pathname !== routes.SignupRoute.build();
   }, [location]);
@@ -51,8 +39,7 @@ export default function App() {
 
   return (
     <>
-      {/* Light durumda da okunabilirlik için temel renkler eklendi */}
-      <div className="min-h-screen bg-white text-slate-900 dark:text-white dark:bg-boxdark-2">
+      <div className='min-h-screen dark:text-white dark:bg-boxdark-2'>
         {isAdminDashboard ? (
           <Outlet />
         ) : (

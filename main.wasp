@@ -219,6 +219,21 @@ api qaEvent {
   httpRoute: (POST, "/qa") 
 }
 
+api compare {
+  fn: import { compare } from "@src/server/comparator",
+  httpRoute: (POST, "/compare")
+}
+
+api compareLLM {
+  fn: import { compareLLM } from "@src/server/comparator",
+  httpRoute: (POST, "/compare_llm")
+}
+
+api compareLLMDiff {
+  fn: import { compareLLMDiff } from "@src/server/comparator",
+  httpRoute: (POST, "/compare_llm_diff")
+}
+
 //#endregion
 
 //#region File Upload
