@@ -5,7 +5,10 @@ import daBoiAvatar from '../client/static/da-boi.webp';
 import avatarPlaceholder from '../client/static/avatar-placeholder.webp';
 
 export const landingPageNavigationItems: NavigationItem[] = [
-  { name: 'Bileşenler', to: '#features' },
+  { name: 'Karşılaştırma', to: routes.ComparatorPageRoute.to },
+  { name: 'Özetleme', to: routes.SummarizerPageRoute.to },
+  { name: 'Soru-Cevap', to: routes.QAPageRoute.to },
+  // { name: 'Bileşenler', to: '#features' },
   { name: 'Fiyatlandırma', to: routes.PricingPageRoute.to },
 ];
 export const features = [

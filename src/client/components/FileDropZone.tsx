@@ -1,8 +1,5 @@
-// src/components/FileDropZone.tsx
+// src/pages/components/FileDropZone.tsx
 import React, { useId, useRef, useState } from "react";
-import { Box, Typography, Button } from "@mui/material";
-import UploadFileIcon from "@mui/icons-material/UploadFile";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 
 type FileDropZoneProps = {
   label: string;
@@ -45,7 +42,6 @@ const FileDropZone: React.FC<FileDropZoneProps> = ({
       setFile(selectedFile);
     } else {
       showInvalidAlert();
-      // aynı dosyayı tekrar seçebilmek için input’u temizle
       if (inputRef.current) inputRef.current.value = "";
     }
   };
@@ -74,7 +70,7 @@ const FileDropZone: React.FC<FileDropZoneProps> = ({
       : undefined;
 
   return (
-    <Box
+    <div
       onDragOver={(e) => {
         e.preventDefault();
         setDragActive(true);
@@ -84,115 +80,75 @@ const FileDropZone: React.FC<FileDropZoneProps> = ({
         setDragActive(false);
       }}
       onDrop={onDropHandler}
-      sx={{
-        p: 2,
-        width: { xs: "100%", md: "calc(50% - 8px)" },
-        height: { xs: 200, md: "65vh" },
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        border: "2px dashed",
-        borderColor: dragActive ? "primary.main" : "divider",
-        borderRadius: 3,
-        bgcolor: "background.paper",
-        color: "text.secondary",
-        transition: "all 0.3s ease",
-        "&:hover": { borderColor: "primary.main" },
-      }}
+      className={[
+        "w-full md:[width:calc(50%-8px)]",
+        "h-52 md:h-[65vh]",
+        "flex flex-col items-center justify-center",
+        "rounded-2xl border-2 border-dashed transition",
+        "bg-white/85 text-slate-600",
+        "dark:bg-slate-800/60 dark:text-slate-300",
+        "border-slate-300 hover:border-indigo-400",
+        "dark:border-slate-600 dark:hover:border-indigo-400",
+        dragActive ? "ring-2 ring-indigo-400" : "",
+        "shadow-sm p-6",
+      ].join(" ")}
     >
       {file ? (
         <>
-          <Typography
-            variant="subtitle1"
-            fontWeight="bold"
-            color="text.primary"
-            textAlign="center"
-            sx={{ fontSize: { xs: "14px", md: "16px" } }}
-          >
-            {file.name}
-          </Typography>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            textAlign="center"
-            sx={{ mt: 1, mb: 2 }}
-          >
-            {Math.round(file.size / 1024)} KB
-          </Typography>
+          <div className="text-center">
+            <div className="font-semibold text-slate-800 dark:text-slate-100 text-sm md:text-base">
+              {file.name}
+            </div>
+            <div className="mt-1 mb-3 text-xs md:text-sm text-slate-500 dark:text-slate-400">
+              {Math.round(file.size / 1024)} KB
+            </div>
+          </div>
 
-          <Button
-            variant="outlined"
-            color="primary"
+          <button
+            type="button"
             onClick={handleRemoveFile}
-            startIcon={<HighlightOffIcon />}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              textTransform: "none",
-              lineHeight: 1,
-              minHeight: "unset",
-              py: 1,
-              transition: "all 0.3s ease",
-              "&:hover": {
-                backgroundColor: "#3f51b5",
-                color: "#fff",
-                borderColor: "#3f51b5",
-              },
-            }}
+            className="inline-flex items-center gap-2 rounded-xl border border-slate-300 dark:border-slate-600
+                       px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-200
+                       hover:bg-slate-50 dark:hover:bg-slate-700 transition
+                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
           >
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+              <path d="M18.3 5.71a1 1 0 0 0-1.41 0L12 10.59 7.11 5.7A1 1 0 0 0 5.7 7.11L10.59 12l-4.9 4.89a1 1 0 1 0 1.41 1.41L12 13.41l4.89 4.89a1 1 0 0 0 1.41-1.41L13.41 12l4.89-4.89a1 1 0 0 0 0-1.4Z" />
+            </svg>
             {removeButtonLabel || "Kapat"}
-          </Button>
+          </button>
         </>
       ) : (
         <>
-          <Typography
-            variant="subtitle1"
-            color="text.secondary"
-            textAlign="center"
-            sx={{ mb: 2 }}
-          >
+          <p className="mb-3 text-center text-sm md:text-base text-slate-600 dark:text-slate-300">
             {label}
-          </Typography>
+          </p>
 
           <input
             id={`dropzone-file-input-${uniqueId}`}
             ref={inputRef}
             type="file"
             accept={acceptAttr}
-            style={{ display: "none" }}
+            className="hidden"
             onChange={handleFileChange}
           />
           <label htmlFor={`dropzone-file-input-${uniqueId}`}>
-            <Button
-              variant="outlined"
-              component="span"
-              startIcon={<UploadFileIcon />}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                textTransform: "none",
-                lineHeight: 1,
-                minHeight: "unset",
-                py: 1,
-                color: "primary.main",
-                borderColor: "primary.main",
-                transition: "all 0.3s ease",
-                "&:hover": {
-                  backgroundColor: "#3f51b5",
-                  color: "#fff",
-                  borderColor: "#3f51b5",
-                },
-              }}
+            <span
+              className="inline-flex cursor-pointer items-center gap-2 rounded-xl
+                         border border-indigo-500 text-indigo-600 dark:text-indigo-400
+                         px-4 py-2 text-sm font-semibold transition
+                         hover:bg-indigo-50 dark:hover:bg-indigo-950/30
+                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
             >
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+                <path d="M5 20h14a1 1 0 0 0 0-2H5a1 1 0 0 0 0 2Zm7-16a1 1 0 0 0-1 1v7.59l-2.3-2.3a1 1 0 1 0-1.4 1.42l4 4a1 1 0 0 0 1.4 0l4-4a1 1 0 0 0-1.4-1.42L13 12.6V5a1 1 0 0 0-1-1Z" />
+              </svg>
               Dosya Yükle
-            </Button>
+            </span>
           </label>
         </>
       )}
-    </Box>
+    </div>
   );
 };
 

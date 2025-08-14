@@ -6,6 +6,22 @@ const BASE = BASE_URL.replace(/\/+$/, "");
 const HASH_ENDPOINT = `${BASE}/hash`;
 const QA_ENDPOINT = `${BASE}/qa`;
 
+/** req.body varsa onu, yoksa stream'den JSON oku */
+async function getJsonPayload(req: Request): Promise<unknown> {
+  const b = (req as any).body;
+  if (b && (typeof b !== "object" || Object.keys(b).length > 0)) return b;
+  const chunks: Uint8Array[] = [];
+  for await (const chunk of req) {
+    chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk);
+  }
+  const raw = Buffer.concat(chunks).toString("utf8") || "{}";
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return {};
+  }
+}
+
 export const hashFile: HashFile = async (req: Request, res: Response) => {
   try {
     const upstream = await fetch(HASH_ENDPOINT, {
@@ -32,15 +48,15 @@ export const hashFile: HashFile = async (req: Request, res: Response) => {
 
 export const qaEvent: QaEvent = async (req: Request, res: Response) => {
   try {
+    const payload = await getJsonPayload(req);
+
     const upstream = await fetch(QA_ENDPOINT, {
       method: "POST",
       headers: {
         "content-type":
           (req.headers["content-type"] as string) ?? "application/json",
       },
-      body: req as any,
-      // @ts-expect-error Node fetch duplex flag
-      duplex: "half",
+      body: JSON.stringify(payload)
     });
 
     upstream.headers.forEach((v, k) => res.setHeader(k, v));

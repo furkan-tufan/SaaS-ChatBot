@@ -1,14 +1,5 @@
-// src/components/ChatBot.tsx
+// src/pages/components/ChatBot.tsx
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardActions,
-  TextField,
-  Button,
-  Box,
-  CircularProgress,
-} from "@mui/material";
 
 /* ---------- ChatMessageFormatted ---------- */
 type Block =
@@ -31,17 +22,11 @@ const ChatMessageFormatted: React.FC<{ text?: string }> = ({ text }) => {
         content: text.slice(lastIndex, match.index),
       });
     }
-    blocks.push({
-      type: "header",
-      content: match[1].trim(),
-    });
+    blocks.push({ type: "header", content: match[1].trim() });
     lastIndex = regex.lastIndex;
   }
   if (lastIndex < text.length) {
-    blocks.push({
-      type: "text",
-      content: text.slice(lastIndex),
-    });
+    blocks.push({ type: "text", content: text.slice(lastIndex) });
   }
 
   // **bold** parser
@@ -53,9 +38,7 @@ const ChatMessageFormatted: React.FC<{ text?: string }> = ({ text }) => {
     let i = 0;
 
     while ((bMatch = boldRegex.exec(input)) !== null) {
-      if (bMatch.index > last) {
-        elements.push(input.slice(last, bMatch.index));
-      }
+      if (bMatch.index > last) elements.push(input.slice(last, bMatch.index));
       elements.push(<strong key={`b-${i}`}>{bMatch[1]}</strong>);
       last = boldRegex.lastIndex;
       i++;
@@ -81,14 +64,7 @@ const ChatMessageFormatted: React.FC<{ text?: string }> = ({ text }) => {
     <>
       {blocks.map((block, idx) =>
         block.type === "header" ? (
-          <div
-            key={`hdr-${idx}`}
-            style={{
-              fontWeight: "bold",
-              fontSize: 17,
-              margin: "10px 0 2px 0",
-            }}
-          >
+          <div key={`hdr-${idx}`} className="font-bold text-[17px] my-2">
             {parseBold(block.content)}
           </div>
         ) : (
@@ -131,19 +107,19 @@ const ChatBot: React.FC<ChatBotProps> = ({ fileHash }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
+  const listRef = useRef<HTMLDivElement | null>(null);
+
+  // Kaydırma efekti (pencere yerine sadece listeyi kaydır)
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    const el = listRef.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [messages, loading]);
 
   useEffect(() => {
     if (!fileHash) {
-      // Dosya kaldırıldığında her şey temizlenir
       setMessages([]);
       setChatHistory([]);
     } else {
-      // Default sorular
       setMessages([
         {
           sender: "bot",
@@ -169,18 +145,11 @@ Aşağıda sık sorulan sorulara tıklayabilirsiniz:`,
     const newUserMessage: ChatMessage = { sender: "user", text: trimmed };
     setInputValue("");
     setLoading(true);
-
-    // Kullanıcının mesajı anında ekranda gösterilsin
     setMessages((prev) => [...prev, newUserMessage]);
 
     try {
-      const payload = {
-        question: trimmed,
-        hash: fileHash,
-        chat_history: chatHistory, // ilkinde [], sonra backend’den gelenle güncellenir
-      };
+      const payload = { question: trimmed, hash: fileHash, chat_history: chatHistory };
 
-      // Relative endpoint: proxy/backend yönetsin
       const response = await fetch("/qa", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -199,9 +168,7 @@ Aşağıda sık sorulan sorulara tıklayabilirsiniz:`,
 
         setChatHistory(data.result.chat_history);
         setMessages((prev) => {
-          const welcome = prev.find((m) =>
-            m.text.includes("Hoş geldiniz")
-          );
+          const welcome = prev.find((m) => m.text.includes("Hoş geldiniz"));
           return welcome ? [welcome, ...formattedMessages] : formattedMessages;
         });
       } else {
@@ -217,153 +184,85 @@ Aşağıda sık sorulan sorulara tıklayabilirsiniz:`,
   };
 
   return (
-    <Card
-      sx={{
-        bgcolor: "background.paper",
-        width: "100%",
-        height: "100%",
-        flex: "1",
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-      }}
-    >
-      {/* Mesajları içeren kaydırılabilir alan */}
-      <CardContent
-        sx={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          overflowY: "auto",
-          py: 2,
-        }}
-      >
+    <div className="w-full h-full flex flex-col overflow-hidden">
+      {/* Mesajlar */}
+      <div ref={listRef}  className="flex-1 overflow-y-auto p-4">
         {messages.map((msg, index) => (
-          <Box
+          <div
             key={index}
-            sx={{
-              alignSelf: msg.sender === "user" ? "flex-end" : "flex-start",
-              bgcolor: msg.sender === "user" ? "#3f51b5" : "grey.800",
-              color: "text.primary",
-              px: 2,
-              py: 1,
-              m: 1,
-              borderRadius: 2,
-              maxWidth: "70%",
-              wordBreak: "break-word",
-            }}
+            className={[
+              "m-1 px-3 py-2 rounded-2xl max-w-[70%] break-words",
+              msg.sender === "user"
+                ? "self-end bg-indigo-600 text-white"
+                : "self-start bg-slate-100 text-slate-800 dark:bg-slate-800/80 dark:text-slate-100",
+            ].join(" ")}
           >
             <ChatMessageFormatted text={msg.text} />
+
             {/* quickQuestions varsa göster */}
             {msg.quickQuestions && (
-              <Box
-                sx={{ mt: 1, display: "flex", flexDirection: "column", gap: 1 }}
-              >
+              <div className="mt-2 flex flex-col gap-2">
                 {msg.quickQuestions.map((question, i) => (
-                  <Button
+                  <button
                     key={i}
-                    size="small"
-                    variant="outlined"
-                    sx={{
-                      color: "primary.main",
-                      borderColor: "primary.main",
-                      textTransform: "none",
-                      justifyContent: "flex-start",
-                      background: "rgba(0,188,212,0.04)",
-                      "&:hover": {
-                        background: "rgba(0,188,212,0.15)",
-                      },
-                    }}
-                    onClick={() => {
-                      void handleSendMessage(question);
-                    }}
+                    className="text-left text-sm rounded-lg border border-indigo-500
+                               text-indigo-600 dark:text-indigo-400 px-3 py-2
+                               bg-indigo-50/40 dark:bg-transparent
+                               hover:bg-indigo-50 dark:hover:bg-indigo-950/30 transition"
+                    onClick={() => void handleSendMessage(question)}
                     disabled={loading}
                   >
                     {question}
-                  </Button>
+                  </button>
                 ))}
-              </Box>
+              </div>
             )}
-          </Box>
+          </div>
         ))}
 
         {loading && (
-          <Box
-            sx={{
-              alignSelf: "flex-start",
-              bgcolor: "grey.800",
-              color: "text.primary",
-              px: 2,
-              py: 1,
-              m: 1,
-              borderRadius: 2,
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <CircularProgress size={16} color="inherit" sx={{ mr: 1 }} />
+          <div className="m-1 px-3 py-2 rounded-2xl self-start bg-slate-100 text-slate-800 dark:bg-slate-800/80 dark:text-slate-100 inline-flex items-center gap-2">
+            <span className="h-4 w-4 rounded-full border-2 border-current border-t-transparent animate-spin" />
             <span>Yazıyor...</span>
-          </Box>
+          </div>
         )}
-        <div ref={messagesEndRef} />
-      </CardContent>
+      </div>
 
-      {/* Mesaj yazma alanı ve Gönder butonu */}
-      <CardActions
-        sx={{
-          p: 2,
-          pt: 1,
-          borderTop: "1px solid",
-          borderColor: "divider",
+      {/* Giriş alanı */}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          void handleSendMessage();
         }}
+        className="border-t border-slate-200 dark:border-slate-700 p-3"
       >
-        <Box sx={{ position: "relative", width: "100%" }}>
-          <TextField
-            variant="outlined"
+        <div className="relative">
+          <input
+            type="text"
             placeholder="Mesajınızı yazın..."
-            fullWidth
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                void handleSendMessage();
-              }
-            }}
-            sx={{
-              "& input": {
-                pr: 5.5,
-              },
-            }}
+            className="w-full h-11 rounded-xl border border-slate-300 dark:border-slate-700
+                       bg-white/90 dark:bg-slate-800/70 text-slate-800 dark:text-slate-100
+                       pl-4 pr-12 outline-none focus:ring-2 focus:ring-indigo-500"
           />
-          <Box
-            onClick={() => void handleSendMessage()}
-            sx={{
-              position: "absolute",
-              right: 12,
-              top: "50%",
-              transform: "translateY(-50%)",
-              cursor: "pointer",
-              color: "primary.main",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
+          <button
+            type="submit"
             aria-label="Gönder"
+            disabled={!inputValue.trim() || !fileHash || loading}
+            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg
+                       text-indigo-600 dark:text-indigo-400
+                       hover:bg-indigo-50 dark:hover:bg-indigo-950/30
+                       disabled:opacity-50 disabled:pointer-events-none
+                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="22"
-              viewBox="0 0 24 24"
-              width="22"
-              fill="currentColor"
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" height="22" viewBox="0 0 24 24" width="22" fill="currentColor">
               <path d="M2 21l21-9L2 3v7l15 2-15 2v7z" />
             </svg>
-          </Box>
-        </Box>
-      </CardActions>
-    </Card>
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 
