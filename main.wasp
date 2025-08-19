@@ -3,7 +3,7 @@ app OpenSaaS {
     version: "^0.17.0"
   },
 
-  title: "My Open SaaS App",
+  title: "Doc Mentor",
 
   head: [
     "<link rel='icon' href='/favicon.ico' />",
@@ -39,7 +39,7 @@ app OpenSaaS {
       email: {
         fromField: {
           name: "Open SaaS App",
-          email: "me@example.com"
+          email: "furkan.tufan@golive.com.tr"
         },
         emailVerification: {
           clientRoute: EmailVerificationRoute,
@@ -68,7 +68,7 @@ app OpenSaaS {
       // }
     },
     onAuthFailedRedirectTo: "/login",
-    onAuthSucceededRedirectTo: "/demo-app",
+    onAuthSucceededRedirectTo: "/",
   },
 
   db: {
@@ -84,10 +84,10 @@ app OpenSaaS {
   },
 
   emailSender: {
-    provider: SMTP,
+    provider: SendGrid,
     defaultFrom: {
       name: "Open SaaS App",
-      email: "no-reply@opensaas.com"
+      email: "furkan.tufan@golive.com.tr"
     },
   },
 }

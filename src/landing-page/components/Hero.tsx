@@ -1,5 +1,6 @@
 import openSaasBannerWebp from '../../client/static/open-saas-banner.webp';
 import { DocsUrl } from '../../shared/common';
+import { routes } from 'wasp/client/router';
 
 export default function Hero() {
   return (
@@ -17,13 +18,14 @@ export default function Hero() {
             </p>
             <div className='mt-10 flex items-center justify-center gap-x-6'>
               <a
-                href={DocsUrl}
+                href={routes.ComparatorPageRoute.to}
                 className='rounded-md px-3.5 py-2.5 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-200 hover:ring-2 hover:ring-yellow-300 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:text-white'
               >
                 Hemen Başlayın <span aria-hidden='true'>→</span>
               </a>
             </div>
           </div>
+          {/* 
           <div className='mt-14 flow-root sm:mt-14'>
             <div className='-m-2  flex justify-center rounded-xl lg:-m-4 lg:rounded-2xl lg:p-4'>
               <img
@@ -36,6 +38,7 @@ export default function Hero() {
               />
             </div>
           </div>
+          */}
         </div>
       </div>
     </div>

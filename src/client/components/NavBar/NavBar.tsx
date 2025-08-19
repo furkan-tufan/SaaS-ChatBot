@@ -18,7 +18,7 @@ export interface NavigationItem {
   to: string;
 }
 
-const NavLogo = () => <img className='h-8 w-8' src={logo} alt='Doc Mentor' />;
+const NavLogo = () => <img className='h-8 w-35' src={logo} alt='Doc Mentor' />;
 
 export default function AppNavBar({ navigationItems }: { navigationItems: NavigationItem[] }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -40,7 +40,7 @@ export default function AppNavBar({ navigationItems }: { navigationItems: Naviga
           >
             <NavLogo />
             {isLandingPage && (
-              <span className='ml-2 text-sm font-semibold leading-6 dark:text-white'>Doc Mentor</span>
+              <span className='ml-2 text-lg font-semibold leading-6 dark:text-white'>Doc Mentor</span>
             )}
           </WaspRouterLink>
         </div>

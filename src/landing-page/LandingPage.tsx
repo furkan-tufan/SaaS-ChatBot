@@ -20,7 +20,9 @@ export default function LandingPage() {
           */
         }
       </main>
-      <Footer footerNavigation={footerNavigation} />
+      {
+        /*<Footer footerNavigation={footerNavigation} /> */
+      }
     </div>
   );
 }
