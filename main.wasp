@@ -142,21 +142,6 @@ action updateIsUserAdminById {
 }
 //#endregion
 
-//#region Demo AI App
-route DemoAppRoute { path: "/demo-app", to: DemoAppPage }
-page DemoAppPage {
-  authRequired: true,
-  component: import DemoAppPage from "@src/demo-ai-app/DemoAppPage"
-}
-
-
-action generateChatbotResponse {               // ✅ yeni
-  fn: import { generateChatbotResponse } from "@src/demo-ai-app/operations",
-  entities: [User]
-}
-
-//#endregion
-
 route ComparatorPageRoute { path: "/comparator", to: ComparatorPage }
 page ComparatorPage {
   authRequired: true,
