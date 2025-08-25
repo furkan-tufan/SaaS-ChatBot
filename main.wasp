@@ -3,7 +3,7 @@ app OpenSaaS {
     version: "^0.17.0"
   },
 
-  title: "Doc Mentor",
+  title: "Contaible",
 
   head: [
     "<link rel='icon' href='/favicon.ico' />",
