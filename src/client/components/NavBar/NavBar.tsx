@@ -6,7 +6,7 @@ import { Dialog } from '@headlessui/react';
 import { BiLogIn } from 'react-icons/bi';
 import { AiFillCloseCircle } from 'react-icons/ai';
 import { HiBars3 } from 'react-icons/hi2';
-import logo from '../../static/logo.webp';
+import logo from '../../static/contaible-logo.png';
 import DropdownUser from '../../../user/DropdownUser';
 import { UserMenuItems } from '../../../user/UserMenuItems';
 import DarkModeSwitcher from '../DarkModeSwitcher';
@@ -18,7 +18,7 @@ export interface NavigationItem {
   to: string;
 }
 
-const NavLogo = () => <img className='h-8 w-35' src={logo} alt='Contaible' />;
+const NavLogo = () => <img className='h-9' src={logo} alt='Contaible' />;
 
 export default function AppNavBar({ navigationItems }: { navigationItems: NavigationItem[] }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -39,9 +39,6 @@ export default function AppNavBar({ navigationItems }: { navigationItems: Naviga
             className='flex items-center -m-1.5 p-1.5 text-gray-900 duration-300 ease-in-out hover:text-yellow-500'
           >
             <NavLogo />
-            {isLandingPage && (
-              <span className='ml-2 text-lg font-semibold leading-6 dark:text-white'>Contaible</span>
-            )}
           </WaspRouterLink>
         </div>
         <div className='flex lg:hidden'>

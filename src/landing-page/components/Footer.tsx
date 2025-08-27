@@ -3,6 +3,8 @@ interface NavigationItem {
   href: string;
 };
 
+import Logo from '../../client/static/golive-logo.webp';
+
 export default function Footer({ footerNavigation }: {
   footerNavigation: {
     app: NavigationItem[]
@@ -18,9 +20,15 @@ export default function Footer({ footerNavigation }: {
         <h2 id='footer-heading' className='sr-only'>
           Footer
         </h2>
-        <div className='flex items-start justify-end mt-10 gap-20'>
+        {/* Sağ üst logo */}
+        <a href='https://golive.com.tr/' aria-label='Kurumsal'
+          className='absolute right-0 top-6 inline-flex items-center gap-2'>
+          <img src={Logo} alt='Logo' className='h-14 w-auto opacity-90 hover:opacity-100 transition' />
+        </a>
+
+        <div className='flex items-start justify-end mt-6 gap-25'>
           <div>
-            <h3 className='text-sm font-semibold leading-6 text-gray-900 dark:text-white'>App</h3>
+            <h3 className='text-md font-bold leading-6 text-gray-900 dark:text-white'>Modüller</h3>
             <ul role='list' className='mt-6 space-y-4'>
               {footerNavigation.app.map((item) => (
                 <li key={item.name}>
@@ -32,7 +40,7 @@ export default function Footer({ footerNavigation }: {
             </ul>
           </div>
           <div>
-            <h3 className='text-sm font-semibold leading-6 text-gray-900 dark:text-white'>Company</h3>
+            <h3 className='text-md font-bold leading-6 text-gray-900 dark:text-white'>Kurumsal</h3>
             <ul role='list' className='mt-6 space-y-4'>
               {footerNavigation.company.map((item) => (
                 <li key={item.name}>

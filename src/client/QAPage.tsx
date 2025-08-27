@@ -49,7 +49,7 @@ export const QAPage: React.FC = () => {
       {/* Başlık */}
       <div className="text-center mb-4">
         <h1 className="text-2xl md:text-4xl font-extrabold text-slate-900 dark:text-slate-100">
-          Soru-Cevap
+          DocMentor
         </h1>
         <div className="w-14 h-1 bg-slate-900 dark:bg-slate-100 mx-auto rounded-md mt-3" />
       </div>

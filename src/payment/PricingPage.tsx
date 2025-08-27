@@ -44,7 +44,7 @@ const PricingPage = () => {
 
   const navigate = useNavigate();
 
-  const SALES_EMAIL = 'furkan.tufan@golive.com.tr';
+  const SALES_EMAIL = 'info@contaible.com';
   function buildMailto(planId: PaymentPlanId, userEmail?: string) {
     const subject = `[Pricing] ${prettyPaymentPlanName(planId)} hakkında`;
     const bodyLines = [

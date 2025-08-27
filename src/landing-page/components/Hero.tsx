@@ -25,7 +25,6 @@ export default function Hero() {
               </a>
             </div>
           </div>
-          {/* 
           <div className='mt-14 flow-root sm:mt-14'>
             <div className='-m-2  flex justify-center rounded-xl lg:-m-4 lg:rounded-2xl lg:p-4'>
               <img
@@ -38,7 +37,6 @@ export default function Hero() {
               />
             </div>
           </div>
-          */}
         </div>
       </div>
     </div>

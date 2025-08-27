@@ -7,33 +7,33 @@ import avatarPlaceholder from '../client/static/avatar-placeholder.webp';
 export const landingPageNavigationItems: NavigationItem[] = [
   { name: 'Karşılaştırma', to: routes.ComparatorPageRoute.to },
   { name: 'Özetleme', to: routes.SummarizerPageRoute.to },
-  { name: 'Soru-Cevap', to: routes.QAPageRoute.to },
-  // { name: 'Bileşenler', to: '#features' },
+  { name: 'DocMentor', to: routes.QAPageRoute.to },
+  { name: 'Bileşenler', to: '#features' },
   { name: 'Fiyatlandırma', to: routes.PricingPageRoute.to },
 ];
 export const features = [
   {
-    name: 'Cool Feature #1',
-    description: 'Describe your cool feature here.',
-    icon: '🤝',
+    name: 'Dosya Karşılaştırma',
+    description: 'Belgeler arasındaki farkları hızlıca tespit eder. ',
+    icon: '🔍',
     href: DocsUrl,
   },
   {
-    name: 'Cool Feature #2',
-    description: 'Describe your cool feature here.',
-    icon: '🔐',
+    name: 'Dosya Özetleme',
+    description: 'Belge üzerindeki önemli alanları özetler.',
+    icon: '📝',
     href: DocsUrl,
   },
   {
-    name: 'Cool Feature #3',
-    description: 'Describe your cool feature here.',
-    icon: '🥞',
+    name: 'DocMentor',
+    description: 'Belge üzerinden doğal dilde soru sorulmasına olanak tanır.',
+    icon: '💬',
     href: DocsUrl,
   },
   {
-    name: 'Cool Feature #4',
-    description: 'Describe your cool feature here.',
-    icon: '💸',
+    name: 'LLM ile Karşılaştırma',
+    description: 'Yapay zekâ destekli karşılaştırmayla belgelerin farklarını analiz eder.',
+    icon: '🧠',
     href: DocsUrl,
   },
 ];
@@ -71,12 +71,11 @@ export const faqs = [
 ];
 export const footerNavigation = {
   app: [
-    { name: 'Documentation', href: DocsUrl },
-    { name: 'Blog', href: BlogUrl },
+    { name: 'Karşılaştırma', href: routes.ComparatorPageRoute.to },
+    { name: 'Özetleme', href: routes.SummarizerPageRoute.to },
+    { name: 'DocMentor', href: routes.QAPageRoute.to },
   ],
   company: [
-    { name: 'About', href: 'https://wasp.sh' },
-    { name: 'Privacy', href: '#' },
-    { name: 'Terms of Service', href: '#' },
+    { name: 'Hakkımızda', href: 'https://golive.com.tr/about-us' },
   ],
 };
