@@ -1,4 +1,4 @@
-import openSaasBannerWebp from '../../client/static/open-saas-banner.webp';
+import openSaasBannerWebp from '../../client/static/banner.png';
 import { DocsUrl } from '../../shared/common';
 import { routes } from 'wasp/client/router';
 
@@ -31,7 +31,6 @@ export default function Hero() {
                 src={openSaasBannerWebp}
                 alt='App screenshot'
                 width={1000}
-                height={530}
                 loading='lazy'
                 className='rounded-md shadow-2xl ring-1 ring-gray-900/10'
               />

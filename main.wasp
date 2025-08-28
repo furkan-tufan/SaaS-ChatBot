@@ -174,6 +174,7 @@ api paymentsWebhook {
 
 api analyzeFile {
   fn: import { analyzeFile } from "@src/server/analyzeFile",
+  entities: [User],
   httpRoute: (POST, "/analyze")
 }
 
@@ -200,6 +201,11 @@ api compareLLM {
 api compareLLMDiff {
   fn: import { compareLLMDiff } from "@src/server/comparator",
   httpRoute: (POST, "/compare_llm_diff")
+}
+
+action spendCredit {
+  fn: import { spendCredit } from "@src/server/credits",
+  entities: [User]
 }
 
 //#endregion

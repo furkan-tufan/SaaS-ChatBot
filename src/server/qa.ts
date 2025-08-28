@@ -1,3 +1,4 @@
+// src/server/qa.ts
 import type { Request, Response } from "express";
 import type { HashFile, QaEvent } from "wasp/server/api";
 
@@ -24,13 +25,12 @@ async function getJsonPayload(req: Request): Promise<unknown> {
 
 export const hashFile: HashFile = async (req: Request, res: Response) => {
   try {
+    // Sade proxy (kredi işlemi client'ta spendCredit ile yapılır)
     const upstream = await fetch(HASH_ENDPOINT, {
       method: "POST",
       headers: {
-        // upstream kendi boundary'sini Stream üzerinden alır; gelen header'ı forward edelim
         "content-type": (req.headers["content-type"] as string) ?? "application/octet-stream",
       },
-      // Express Request stream'ini olduğu gibi forward
       body: req as any,
       // @ts-expect-error Node fetch duplex flag (Node 18+/20)
       duplex: "half",
@@ -50,13 +50,13 @@ export const qaEvent: QaEvent = async (req: Request, res: Response) => {
   try {
     const payload = await getJsonPayload(req);
 
+    // Sade proxy (soru gönderiminde de kredi işlemi client/aksi halde ayrı action ile yapılır)
     const upstream = await fetch(QA_ENDPOINT, {
       method: "POST",
       headers: {
-        "content-type":
-          (req.headers["content-type"] as string) ?? "application/json",
+        "content-type": (req.headers["content-type"] as string) ?? "application/json",
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 
     upstream.headers.forEach((v, k) => res.setHeader(k, v));

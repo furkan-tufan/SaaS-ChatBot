@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import FileDropZone from "./components/FileDropZone";
+import { useAuth } from "wasp/client/auth";
+import { spendCredit } from "wasp/client/operations";
 
 /* ---------- Types ---------- */
 type CompareDiffResult = string[];
@@ -14,6 +16,9 @@ type DiffUnion = CompareDiffResult | LLMOnlyResult | LLMDiffResult;
 type ApiResponse = { differences: DiffUnion };
 
 export const ComparatorPage: React.FC = () => {
+  const { data: user } = useAuth();
+
+  const [localCredits, setLocalCredits] = useState<number>(0);
   const [file1, setFile1] = useState<File | null>(null);
   const [file2, setFile2] = useState<File | null>(null);
 
@@ -22,13 +27,43 @@ export const ComparatorPage: React.FC = () => {
   const [isLLMDiffResult, setIsLLMDiffResult] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  useEffect(() => {
+    setLocalCredits(Number(user?.credits ?? 0));
+  }, [user?.credits]);
+
   // Dosya değişince eski sonuçları temizle
   useEffect(() => {
     setDiffResult(null);
   }, [file1, file2]);
 
+  const beforeCallSpendCredit = async (): Promise<boolean> => {
+    if (localCredits <= 0) {
+      alert("Krediniz bitti. Lütfen paket satın alın veya kredilerinizi yenileyin");
+      return false;
+    }
+    try {
+      await spendCredit(); // sunucuda atomik düşer; yetki yoksa 401, kredi yoksa 402 fırlatır
+      setLocalCredits((c) => Math.max(0, (c ?? 0) - 1)); // UI’da anında 1 azalt
+      return true;
+    } catch (e: any) {
+      if (e?.status === 401) {
+        alert("Oturum bulunamadı. Lütfen tekrar giriş yapın.");
+        return false;
+      }
+      if (e?.status === 402) {
+        setLocalCredits(0);
+        alert("Krediniz bitti. Lütfen paket satın alın veya kredilerinizi yenileyin");
+        return false;
+      }
+      console.error("Kredi hatası:", e);
+      alert("Kredi kontrolü sırasında bir hata oluştu.");
+      return false;
+    }
+  };
+
   const handleCompare = async () => {
     if (!file1 || !file2) return;
+    if (!(await beforeCallSpendCredit())) return;
 
     setIsLLMResult(false);
     setIsLLMDiffResult(false);
@@ -47,7 +82,6 @@ export const ComparatorPage: React.FC = () => {
       const data: ApiResponse = await response.json();
       setDiffResult(data.differences);
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error("Karşılaştırma hatası:", error);
       setDiffResult(null);
     } finally {
@@ -57,6 +91,7 @@ export const ComparatorPage: React.FC = () => {
 
   const handleCompareWithLLM = async () => {
     if (!file1 || !file2) return;
+    if (!(await beforeCallSpendCredit())) return;
 
     setIsLLMResult(true);
     setIsLLMDiffResult(false);
@@ -75,7 +110,6 @@ export const ComparatorPage: React.FC = () => {
       const data: ApiResponse = await response.json();
       setDiffResult(data.differences);
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error("LLM karşılaştırma hatası:", error);
       setDiffResult(null);
     } finally {
@@ -85,6 +119,7 @@ export const ComparatorPage: React.FC = () => {
 
   const handleCompareWithLLMDiff = async () => {
     if (!file1 || !file2) return;
+    if (!(await beforeCallSpendCredit())) return;
 
     setIsLLMDiffResult(true);
     setIsLLMResult(false);
@@ -102,7 +137,6 @@ export const ComparatorPage: React.FC = () => {
       const data: ApiResponse = await response.json();
       setDiffResult(data.differences);
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error("LLM + Karşılaştırma hatası:", error);
       setDiffResult(null);
     } finally {
@@ -121,9 +155,17 @@ export const ComparatorPage: React.FC = () => {
       </div>
 
       {/* Açıklama */}
-      <p className="text-center text-sm md:text-base text-slate-600 dark:text-slate-300 mb-6">
+      <p className="text-center text-sm md:text-base text-slate-600 dark:text-slate-300 mb-2">
         Yalnızca PDF, DOC, DOCX, JPG, JPEG veya PNG dosyaları desteklenir. Yüklediğiniz iki dosyanın formatı aynı olmalıdır.
       </p>
+
+      {/* Kredi Rozeti 
+      <div className="text-center mb-4">
+        <span className="inline-flex items-center rounded-full border border-slate-300 dark:border-slate-700 px-3 py-1 text-xs md:text-sm text-slate-700 dark:text-slate-200 bg-white/60 dark:bg-slate-900/60">
+          Kalan Kredi: <strong className="ml-1">{localCredits}</strong>
+        </span>
+      </div>
+      */}
 
       {/* Dosya Yükleme Alanları */}
       <div className="flex gap-2 flex-wrap">

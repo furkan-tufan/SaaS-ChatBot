@@ -1,13 +1,24 @@
-// src/pages/SummarizerPage.tsx
 import React, { useEffect, useState } from "react";
 import FileDropZone from "./components/FileDropZone";
+import { useAuth } from "wasp/client/auth";
+import { spendCredit } from "wasp/client/operations";
 
 type SummaryResponse = { summary: string };
 
 export const SummarizerPage: React.FC = () => {
+  const { data: user } = useAuth();
+
+  // UI'da anında güncellemek için lokal kredi state'i
+  const [localCredits, setLocalCredits] = useState<number>(0);
+
   const [file, setFile] = useState<File | null>(null);
   const [summaryResult, setSummaryResult] = useState<SummaryResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+
+  // Kullanıcı değiştikçe kredi state’ini senkronize et
+  useEffect(() => {
+    setLocalCredits(Number(user?.credits ?? 0));
+  }, [user?.credits]);
 
   // Yeni dosya seçildiğinde eski özeti temizle
   useEffect(() => {
@@ -19,22 +30,50 @@ export const SummarizerPage: React.FC = () => {
       alert("Lütfen bir dosya seçin.");
       return;
     }
+    if (localCredits <= 0) {
+      alert("Krediniz bitti. Lütfen paket satın alın veya kredilerinizi yenileyin.");
+      return;
+    }
 
+    // 1) Sunucuda KREDİ HARCA (auth otomatik, kontrol server'da)
+    try {
+      await spendCredit(); // krediniz yoksa HttpError(402) fırlatır
+    } catch (e: any) {
+      if (e?.status === 401) {
+        alert("Oturum bulunamadı. Lütfen tekrar giriş yapın.");
+        return;
+      }
+      if (e?.status === 402) {
+        setLocalCredits(0);
+        alert("Krediniz bitti. Özetleme yapılamadı.");
+        return;
+      }
+      console.error("Kredi hatası:", e);
+      alert("Kredi kontrolü sırasında hata oluştu.");
+      return;
+    }
+
+    // 2) Harcama başarılıysa analize gönder
     const formData = new FormData();
     formData.append("file", file);
 
     setLoading(true);
     try {
       const response = await fetch("/analyze", { method: "POST", body: formData });
+
       if (!response.ok) throw new Error("Sunucu hatası!");
+
       const data: SummaryResponse = await response.json();
       setSummaryResult(data);
-      setTimeout(() => {
-        window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-      }, 150);
+
+      // UI’da 1 azalt (server zaten düşürdü)
+      setLocalCredits((c) => Math.max(0, (c ?? 0) - 1));
+
     } catch (error) {
       console.error("Özetleme hatası:", error);
       alert("Özet çıkarma başarısız oldu!");
+      // Gerekirse upstream hatasında krediyi geri yükle,
+      // setLocalCredits((c) => c + 1);
     } finally {
       setLoading(false);
     }
@@ -51,9 +90,17 @@ export const SummarizerPage: React.FC = () => {
       </div>
 
       {/* Açıklama */}
-      <p className="text-center text-sm md:text-base text-slate-600 dark:text-slate-300 mb-6">
+      <p className="text-center text-sm md:text-base text-slate-600 dark:text-slate-300 mb-3">
         Belgenizin içeriğini otomatik olarak özetleyin. PDF, DOC, DOCX, JPG, JPEG veya PNG formatındaki bir dosya yükleyin.
       </p>
+
+      {/* Kredi Rozeti
+      <div className="text-center mb-6">
+        <span className="inline-flex items-center rounded-full border border-slate-300 dark:border-slate-700 px-3 py-1 text-xs md:text-sm text-slate-700 dark:text-slate-200 bg-white/60 dark:bg-slate-900/60">
+          Kalan Kredi: <strong className="ml-1">{localCredits}</strong>
+        </span>
+      </div>
+       */}
 
       {/* İki sütun */}
       <div className="flex flex-col md:flex-row gap-2 md:gap-3 flex-1 min-h-0">

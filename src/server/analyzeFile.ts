@@ -1,21 +1,21 @@
+// src/server/analyzeFile.ts
 import type { AnalyzeFile } from "wasp/server/api";
 import type { Request, Response } from "express";
 
-// Analyze servisinin taban adresi
 const BASE_URL = process.env.BASE_URL ?? "http://127.0.0.1:5001";
-// Çift / olmasın diye trailing slash'ı temizleyip /analyze ekliyoruz
 const ANALYZE_ENDPOINT = `${BASE_URL.replace(/\/+$/, "")}/analyze`;
 
+/** Prod için sade proxy: isteği Flask /analyze endpoint’ine iletir ve cevabı aynen döner. */
 export const analyzeFile: AnalyzeFile = async (req: Request, res: Response) => {
   try {
     const upstream = await fetch(ANALYZE_ENDPOINT, {
       method: "POST",
       headers: {
-        "content-type": (req.headers["content-type"] as string) ?? "application/octet-stream",
+        "content-type":
+          (req.headers["content-type"] as string) ?? "application/octet-stream",
       },
       body: req as any,
-      // Node 18+/20 için stream forward
-      // @ts-expect-error node fetch duplex flag
+      // @ts-expect-error Node 18+/20 fetch duplex flag
       duplex: "half",
     });
 

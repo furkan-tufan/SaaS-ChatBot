@@ -1,13 +1,21 @@
-// src/pages/QAPage.tsx
 import React, { useEffect, useState } from "react";
 import FileDropZone from "./components/FileDropZone";
 import ChatBot from "./components/ChatBot";
+import { useAuth } from "wasp/client/auth";
+import { spendCredit } from "wasp/client/operations";
 
 type HashResponse = { hash: string };
 
 export const QAPage: React.FC = () => {
+  const { data: user } = useAuth();
+
+  const [localCredits, setLocalCredits] = useState<number>(0);
   const [file, setFile] = useState<File | null>(null);
   const [hash, setHash] = useState<string | null>(null);
+
+  useEffect(() => {
+    setLocalCredits(Number(user?.credits ?? 0));
+  }, [user?.credits]);
 
   useEffect(() => {
     localStorage.removeItem("qa_file_hash");
@@ -17,6 +25,30 @@ export const QAPage: React.FC = () => {
   useEffect(() => {
     const handleFileUpload = async (): Promise<void> => {
       if (!file) return;
+
+      // Çağrıdan önce kredi kontrolü — butonu etkilemiyoruz.
+      if (localCredits <= 0) {
+        alert("Krediniz bitti. Lütfen paket satın alın veya kredilerinizi yenileyin");
+        return;
+      }
+      try {
+        await spendCredit(); // server’da atomik 1 düşer, 401/402 fırlatabilir
+        setLocalCredits((c) => Math.max(0, (c ?? 0) - 1)); // UI’da 1 azalt
+      } catch (e: any) {
+        if (e?.status === 401) {
+          alert("Oturum bulunamadı. Lütfen tekrar giriş yapın.");
+          return;
+        }
+        if (e?.status === 402) {
+          setLocalCredits(0);
+          alert("Krediniz bitti. Lütfen paket satın alın veya kredilerinizi yenileyin");
+          return;
+        }
+        // eslint-disable-next-line no-console
+        console.error("Kredi hatası:", e);
+        alert("Kredi kontrolü sırasında hata oluştu.");
+        return;
+      }
 
       const formData = new FormData();
       formData.append("file", file);
@@ -42,6 +74,7 @@ export const QAPage: React.FC = () => {
       setHash(null); // yeni dosyada eski hash’i sıfırla
       void handleFileUpload();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [file]);
 
   return (
@@ -59,6 +92,14 @@ export const QAPage: React.FC = () => {
         Yüklediğiniz belgeye dayalı olarak sorular sorun.
       </p>
 
+      {/* Kredi Rozeti 
+      <div className="text-center mb-4">
+        <span className="inline-flex items-center rounded-full border border-slate-300 dark:border-slate-700 px-3 py-1 text-xs md:text-sm text-slate-700 dark:text-slate-200 bg-white/60 dark:bg-slate-900/60">
+          Kalan Kredi: <strong className="ml-1">{localCredits}</strong>
+        </span>
+      </div>
+      */}
+      
       {/* İki sütun */}
       <div className="flex flex-col md:flex-row gap-2 md:gap-3 flex-1 min-h-0">
         {/* Sol: Dosya Yükleme */}
