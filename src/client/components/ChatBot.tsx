@@ -1,5 +1,7 @@
 // src/pages/components/ChatBot.tsx
 import React, { useEffect, useRef, useState } from "react";
+import { useAuth } from "wasp/client/auth";
+import { spendCredit } from "wasp/client/operations";
 
 /* ---------- ChatMessageFormatted ---------- */
 type Block =
@@ -101,18 +103,24 @@ type ChatBotProps = {
 };
 
 const ChatBot: React.FC<ChatBotProps> = ({ fileHash }) => {
+  const { data: user } = useAuth();
+  const [localCredits, setLocalCredits] = useState<number>(0);
+
   const [inputValue, setInputValue] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [chatHistory, setChatHistory] = useState<ChatHistory>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+
+  // Sadece liste içinde kaydırma için alt anchor
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-  const listRef = useRef<HTMLDivElement | null>(null);
-
-  // Kaydırma efekti (pencere yerine sadece listeyi kaydır)
   useEffect(() => {
-    const el = listRef.current;
-    if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+    setLocalCredits(Number(user?.credits ?? 0));
+  }, [user?.credits]);
+
+  // MUI mantığı: her mesajda sadece içerik scroll'u, pencere değil
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages, loading]);
 
   useEffect(() => {
@@ -141,6 +149,29 @@ Aşağıda sık sorulan sorulara tıklayabilirsiniz:`,
   const handleSendMessage = async (customQuestion?: string) => {
     const trimmed = (customQuestion ?? inputValue).trim();
     if (!trimmed || !fileHash) return;
+
+    // Summarizer mantığı: her sorudan önce kredi harca
+    if (localCredits <= 0) {
+      alert("Krediniz bitti. Lütfen paket satın alın veya kredilerinizi yenileyin");
+      return;
+    }
+    try {
+      await spendCredit();
+      setLocalCredits((c) => Math.max(0, (c ?? 0) - 1));
+    } catch (e: any) {
+      if (e?.status === 401) {
+        alert("Oturum bulunamadı. Lütfen tekrar giriş yapın.");
+        return;
+      }
+      if (e?.status === 402) {
+        setLocalCredits(0);
+        alert("Krediniz bitti. Lütfen paket satın alın veya kredilerinizi yenileyin");
+        return;
+      }
+      console.error("Kredi hatası:", e);
+      alert("Kredi kontrolü sırasında hata oluştu.");
+      return;
+    }
 
     const newUserMessage: ChatMessage = { sender: "user", text: trimmed };
     setInputValue("");
@@ -172,11 +203,9 @@ Aşağıda sık sorulan sorulara tıklayabilirsiniz:`,
           return welcome ? [welcome, ...formattedMessages] : formattedMessages;
         });
       } else {
-        // eslint-disable-next-line no-console
         console.error("Servis hata:", (data as QAResponseError).error ?? "Bilinmeyen hata");
       }
     } catch (err) {
-      // eslint-disable-next-line no-console
       console.error("Sunucu hatası:", err);
     } finally {
       setLoading(false);
@@ -184,9 +213,9 @@ Aşağıda sık sorulan sorulara tıklayabilirsiniz:`,
   };
 
   return (
-    <div className="w-full h-full flex flex-col overflow-hidden">
-      {/* Mesajlar */}
-      <div ref={listRef}  className="flex-1 overflow-y-auto p-4">
+    <div className="w-full h-full flex flex-col flex-1 min-h-0 overflow-hidden">
+      {/* Mesajlar: sadece burada scroll */}
+      <div className="flex-1 overflow-y-auto py-2 px-4">
         {messages.map((msg, index) => (
           <div
             key={index}
@@ -226,9 +255,10 @@ Aşağıda sık sorulan sorulara tıklayabilirsiniz:`,
             <span>Yazıyor...</span>
           </div>
         )}
+        <div ref={messagesEndRef} />
       </div>
 
-      {/* Giriş alanı */}
+      {/* Giriş alanı: alta sabit, üstteki içerik taşarsa yukarısı scroll olur */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -242,6 +272,12 @@ Aşağıda sık sorulan sorulara tıklayabilirsiniz:`,
             placeholder="Mesajınızı yazın..."
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                void handleSendMessage();
+              }
+            }}
             className="w-full h-11 rounded-xl border border-slate-300 dark:border-slate-700
                        bg-white/90 dark:bg-slate-800/70 text-slate-800 dark:text-slate-100
                        pl-4 pr-12 outline-none focus:ring-2 focus:ring-indigo-500"

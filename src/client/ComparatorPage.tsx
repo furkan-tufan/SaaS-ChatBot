@@ -145,9 +145,9 @@ export const ComparatorPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-3 md:px-4 mt-8 mb-4 min-h-[calc(100vh-56px)] flex flex-col">
+    <div className="max-w-6xl mx-auto px-3 md:px-4 pt-7 pb-4 min-h-[calc(100vh-84px)] flex flex-col" >
       {/* Başlık */}
-      <div className="text-center mb-4">
+      <div className="text-center mb-2 md:mb-4">
         <h1 className="text-2xl md:text-4xl font-extrabold text-slate-900 dark:text-slate-100">
           Dosya Karşılaştırma
         </h1>
@@ -155,7 +155,7 @@ export const ComparatorPage: React.FC = () => {
       </div>
 
       {/* Açıklama */}
-      <p className="text-center text-sm md:text-base text-slate-600 dark:text-slate-300 mb-2">
+      <p className="text-center text-sm md:text-base text-slate-600 dark:text-slate-300 mb-4 md:mb-6">
         Yalnızca PDF, DOC, DOCX, JPG, JPEG veya PNG dosyaları desteklenir. Yüklediğiniz iki dosyanın formatı aynı olmalıdır.
       </p>
 

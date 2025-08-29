@@ -85,21 +85,18 @@ const getConfig = () => {
     },
 
     language: {
-      default: 'en',
+      default: 'tr',
       translations: {
-        en: {
+        tr: {
           consentModal: {
-            title: 'We use cookies',
+            title: 'Çerez Kullanımı',
             description:
-              'We use cookies primarily for analytics to enhance your experience. By accepting, you agree to our use of these cookies. You can manage your preferences or learn more about our cookie policy.',
-            acceptAllBtn: 'Accept all',
-            acceptNecessaryBtn: 'Reject all',
+              'Deneyiminizi geliştirmek için çerezlerden faydalanıyoruz. Kabul ederek bu çerezleri kullanmamıza izin verebilirsiniz.',
+            acceptAllBtn: 'Tümünü kabul et',
+            acceptNecessaryBtn: 'Tümünü reddet',
             // showPreferencesBtn: 'Manage Individual preferences', // (OPTIONAL) Activates the preferences modal
             // TODO: Add your own privacy policy and terms and conditions links below.
-            footer: `
-            <a href="<your-url-here>" target="_blank">Privacy Policy</a>
-            <a href="<your-url-here>" target="_blank">Terms and Conditions</a>
-                    `,
+            footer: ``,
           },
           // The showPreferencesBtn activates this modal to manage individual preferences https://cookieconsent.orestbida.com/reference/configuration-reference.html#translation-preferencesmodal
           preferencesModal: {

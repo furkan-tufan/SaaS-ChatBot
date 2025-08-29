@@ -25,7 +25,7 @@ async function getJsonPayload(req: Request): Promise<unknown> {
 
 export const hashFile: HashFile = async (req: Request, res: Response) => {
   try {
-    // Sade proxy (kredi işlemi client'ta spendCredit ile yapılır)
+    // Sade proxy
     const upstream = await fetch(HASH_ENDPOINT, {
       method: "POST",
       headers: {
@@ -50,7 +50,7 @@ export const qaEvent: QaEvent = async (req: Request, res: Response) => {
   try {
     const payload = await getJsonPayload(req);
 
-    // Sade proxy (soru gönderiminde de kredi işlemi client/aksi halde ayrı action ile yapılır)
+    // Sade proxy
     const upstream = await fetch(QA_ENDPOINT, {
       method: "POST",
       headers: {

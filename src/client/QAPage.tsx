@@ -1,3 +1,4 @@
+// src/pages/QAPage.tsx
 import React, { useEffect, useState } from "react";
 import FileDropZone from "./components/FileDropZone";
 import ChatBot from "./components/ChatBot";
@@ -12,6 +13,7 @@ export const QAPage: React.FC = () => {
   const [localCredits, setLocalCredits] = useState<number>(0);
   const [file, setFile] = useState<File | null>(null);
   const [hash, setHash] = useState<string | null>(null);
+  const [showFeedback, setShowFeedback] = useState<boolean>(false);
 
   useEffect(() => {
     setLocalCredits(Number(user?.credits ?? 0));
@@ -26,14 +28,13 @@ export const QAPage: React.FC = () => {
     const handleFileUpload = async (): Promise<void> => {
       if (!file) return;
 
-      // Çağrıdan önce kredi kontrolü — butonu etkilemiyoruz.
       if (localCredits <= 0) {
         alert("Krediniz bitti. Lütfen paket satın alın veya kredilerinizi yenileyin");
         return;
       }
       try {
-        await spendCredit(); // server’da atomik 1 düşer, 401/402 fırlatabilir
-        setLocalCredits((c) => Math.max(0, (c ?? 0) - 1)); // UI’da 1 azalt
+        await spendCredit();
+        setLocalCredits((c) => Math.max(0, (c ?? 0) - 1));
       } catch (e: any) {
         if (e?.status === 401) {
           alert("Oturum bulunamadı. Lütfen tekrar giriş yapın.");
@@ -44,7 +45,6 @@ export const QAPage: React.FC = () => {
           alert("Krediniz bitti. Lütfen paket satın alın veya kredilerinizi yenileyin");
           return;
         }
-        // eslint-disable-next-line no-console
         console.error("Kredi hatası:", e);
         alert("Kredi kontrolü sırasında hata oluştu.");
         return;
@@ -63,8 +63,8 @@ export const QAPage: React.FC = () => {
         const data: HashResponse = await response.json();
         localStorage.setItem("qa_file_hash", data.hash);
         setHash(data.hash);
+        setShowFeedback(false);
       } catch (error) {
-        // eslint-disable-next-line no-console
         console.error("Dosya yüklenemedi...", error);
         setHash(null);
       }
@@ -78,9 +78,9 @@ export const QAPage: React.FC = () => {
   }, [file]);
 
   return (
-    <div className="max-w-6xl mx-auto px-3 md:px-4 mt-8 mb-4 min-h-[calc(100vh-56px)] flex flex-col" >
+    <div className="max-w-6xl mx-auto px-3 md:px-4 pt-7 pb-4 min-h-[calc(100vh-84px)] flex flex-col" >
       {/* Başlık */}
-      <div className="text-center mb-4">
+      <div className="text-center mb-2 md:mb-4">
         <h1 className="text-2xl md:text-4xl font-extrabold text-slate-900 dark:text-slate-100">
           DocMentor
         </h1>
@@ -88,8 +88,8 @@ export const QAPage: React.FC = () => {
       </div>
 
       {/* Açıklama */}
-      <p className="text-center text-sm md:text-base text-slate-600 dark:text-slate-300 mb-6">
-        Yüklediğiniz belgeye dayalı olarak sorular sorun.
+      <p className="text-center text-sm md:text-base text-slate-600 dark:text-slate-300 mb-4 md:mb-6">
+        Yüklediğiniz belgeye dayalı olarak sorular sorun. Desteklenen formatlar: PDF, DOC, DOCX, TXT, JPG, JPEG, PNG.
       </p>
 
       {/* Kredi Rozeti 
@@ -99,7 +99,7 @@ export const QAPage: React.FC = () => {
         </span>
       </div>
       */}
-      
+
       {/* İki sütun */}
       <div className="flex flex-col md:flex-row gap-2 md:gap-3 flex-1 min-h-0">
         {/* Sol: Dosya Yükleme */}
@@ -125,30 +125,25 @@ export const QAPage: React.FC = () => {
                 setFile(null);
                 localStorage.removeItem("qa_file_hash");
                 setHash(null);
-                setTimeout(() => {
-                  window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-                }, 150);
+                setShowFeedback(true);
+                // ❌ Pencereyi kaydırma yok; yalnızca ChatBot kendi içinde kayar.
               } else {
-                // eslint-disable-next-line no-console
                 console.error("Sunucu başarısız yanıt verdi:", response.status);
               }
             } catch (err) {
-              // eslint-disable-next-line no-console
               console.error("Konuşma bitirme isteği başarısız:", err);
             }
           }}
         />
 
-        {/* Sağ: Chatbot paneli */}
+        {/* Sağ: Chatbot paneli*/}
         <div
-          className="w-full md:[width:calc(50%-8px)] flex flex-col
+          className="w-full md:[width:calc(50%-8px)] flex flex-col flex-1 min-h-0
                      rounded-2xl border bg-white/90 dark:bg-slate-900/70
                      border-slate-200 dark:border-slate-700 shadow-md
-                     h-auto md:h-[65vh] md:max-h-none max-h-[calc(100vh-240px)]"
+                     h-auto md:h-[65vh] max-h-[calc(100vh-450px)] md:max-h-none"
         >
-          <div className="flex-1 min-h-0 overflow-hidden">
-            <ChatBot fileHash={hash} />
-          </div>
+          <ChatBot fileHash={hash} />
         </div>
       </div>
     </div>
