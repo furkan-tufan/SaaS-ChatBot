@@ -28,6 +28,13 @@ app OpenSaaS {
     // via the Cookie Consent component after the user clicks the "Accept" cookies button.
     "<script defer data-domain='<your-site-id>' src='https://plausible.io/js/script.js'></script>",  // for production
     "<script defer data-domain='<your-site-id>' src='https://plausible.io/js/script.local.js'></script>",  // for development
+
+    // ▼ FOET engelle: sadece auth sayfalarında body'yi kısaca gizle (kaçışsız, regex yok)
+    "<style id='tr-hide'>html[data-tr=0] body{opacity:0;transition:opacity .05s linear}</style>",
+    "<script>(function(){var p=location.pathname;while(p.length>1&&p.charAt(p.length-1)==='/'){p=p.slice(0,-1)}var T=['/login','/signup','/request-password-reset','/password-reset','/email-verification'];for(var i=0;i<T.length;i++){if(p.endsWith(T[i])){document.documentElement.setAttribute('data-tr','0');break}}})();</script>",
+
+    // ▼ Çeviri patch'i olabildiğince erken (defer YOK)
+    "<script src='/login-tr-patch.js'></script>"
   ],
 
   // 🔐 Auth out of the box! https://wasp.sh/docs/auth/overview
